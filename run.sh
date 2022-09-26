@@ -11,21 +11,30 @@ task_name_lst=(SNLI)
 
 #sigma_init_lst=(1 0.5)
 #learning_rate_lst=(0.5 0.1 0.02)
-sigma_init_lst=(6)
+sigma_init_lst=(2)
 learning_rate_lst=(0.2)
 
-alg=CMA
+#sigma_lst=(1 2)
+#weight_decay_lst=(0 0.001 0.0001)
+
+sigma_lst=(1)
+weight_decay_lst=(0)
+
+alg=DFO_tr
 cuda=0
 
-
 for task_name in "${task_name_lst[@]}"; do
-     for learning_rate in "${learning_rate_lst[@]}"; do
-          for sigma_init in "${sigma_init_lst[@]}"; do
-     		for seed in "${seed_lst[@]}"; do
-         		python -u bbt.py --seed $seed --task_name $task_name --alg $alg --sigma_init $sigma_init --learning_rate $learning_rate
-     		done
-          done
-     done
+        for sigma in "${sigma_lst[@]}"; do
+                for weight_decay in "${weight_decay_lst[@]}"; do
+                        for learning_rate in "${learning_rate_lst[@]}"; do
+          		        for sigma_init in "${sigma_init_lst[@]}"; do
+     			                for seed in "${seed_lst[@]}"; do
+         			                python -u bbt.py --seed $seed --task_name $task_name --alg $alg --sigma_init $sigma_init --learning_rate $learning_rate --weight_decay $weight_decay --sigma $sigma
+     			 	        done
+          		        done
+     		        done
+	        done
+        done 
      #python -u test.py --task_name $task_name --cuda $cuda
 done
 

@@ -1,0 +1,1189 @@
+nohup: ignoring input
+###################################
+sigma init, learning rate: 2.0 0.2
+###################################
+Using custom data configuration default
+Reusing dataset snli (/root/.cache/huggingface/datasets/snli/default/0.0.0/73c7063d1d6ea6b34d71b18b0947826472535af1ea5ac5bdf0149db07367524f)
+Loading cached processed dataset at /root/.cache/huggingface/datasets/snli/default/0.0.0/73c7063d1d6ea6b34d71b18b0947826472535af1ea5ac5bdf0149db07367524f/cache-e07f58dc7ebf28d1.arrow
+  0%|          | 0/48 [00:00<?, ?ex/s]100%|██████████| 48/48 [00:00<00:00, 4321.05ex/s]
+{'text1': 'Girl in plaid shirt riding a unicycle.', 'text2': 'A girl is riding.', 'labels': 0, 'input_text': "Xro target himself turn Europe worked energy scored * soon ball TV annual 2013 race International'd Market conferenceio o changesig officers inside form published phone co legal executive fightings hope summer officer football property@ book parents costsac manager create age email markets main . Girl in plaid shirt riding a unicycle. ? <mask> , A girl is riding.", 'target_text': 'Yes'}
+  0%|          | 0/1 [00:00<?, ?ba/s]100%|██████████| 1/1 [00:00<00:00, 22.89ba/s]
+Using custom data configuration default
+Reusing dataset snli (/root/.cache/huggingface/datasets/snli/default/0.0.0/73c7063d1d6ea6b34d71b18b0947826472535af1ea5ac5bdf0149db07367524f)
+Loading cached processed dataset at /root/.cache/huggingface/datasets/snli/default/0.0.0/73c7063d1d6ea6b34d71b18b0947826472535af1ea5ac5bdf0149db07367524f/cache-b7f876643b92cc22.arrow
+  0%|          | 0/48 [00:00<?, ?ex/s]100%|██████████| 48/48 [00:00<00:00, 4260.61ex/s]
+{'text1': 'People using an outdoor ice skating rink.', 'text2': 'The people are on a plane.', 'labels': 2, 'input_text': "Xro target himself turn Europe worked energy scored * soon ball TV annual 2013 race International'd Market conferenceio o changesig officers inside form published phone co legal executive fightings hope summer officer football property@ book parents costsac manager create age email markets main . People using an outdoor ice skating rink. ? <mask> , The people are on a plane.", 'target_text': 'No'}
+  0%|          | 0/1 [00:00<?, ?ba/s]100%|██████████| 1/1 [00:00<00:00, 23.57ba/s]
+# of train data: 48
+Example:
++------------------------+------------------------+----------+--------+
+| input_ids              | attention_mask         | mask_pos | labels |
++------------------------+------------------------+----------+--------+
+| [0, 1000, 1001, 100... | [1, 1, 1, 1, 1, 1, ... | 63       | 9904   |
++------------------------+------------------------+----------+--------+
+
+# of dev data: 48
+Example:
++------------------------+------------------------+----------+--------+
+| input_ids              | attention_mask         | mask_pos | labels |
++------------------------+------------------------+----------+--------+
+| [0, 1000, 1001, 100... | [1, 1, 1, 1, 1, 1, ... | 61       | 3084   |
++------------------------+------------------------+----------+--------+
+Some weights of RobertaForMaskedLM were not initialized from the model checkpoint at roberta-large and are newly initialized: ['lm_head.decoder.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+[Embedding] mu: -0.018104109913110733 | std: 0.13582643866539001 [RandProj]  mu: 0.0 | std: 0.006074342999950358
+self.linear.parameters() p: Parameter containing:
+tensor([[ 0.0215,  0.0187, -0.0230,  ..., -0.0347,  0.0174,  0.0258],
+        [-0.0197,  0.0127, -0.0107,  ..., -0.0039,  0.0443, -0.0192],
+        [ 0.0041, -0.0105, -0.0236,  ...,  0.0093,  0.0184,  0.0251],
+        ...,
+        [ 0.0342,  0.0383, -0.0274,  ..., -0.0028,  0.0363, -0.0289],
+        [-0.0367,  0.0159,  0.0282,  ..., -0.0111,  0.0207,  0.0131],
+        [ 0.0369, -0.0124, -0.0201,  ...,  0.0163,  0.0030,  0.0388]],
+       requires_grad=True)
+[# API Calls 20] loss: 1.4861. Current perf: 0.375. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.5201854705810547
+[# API Calls 40] loss: 1.4853. Current perf: 0.375. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.5165013074874878
+[# API Calls 60] loss: 1.4845. Current perf: 0.375. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.5129886865615845
+[# API Calls 80] loss: 1.4839. Current perf: 0.3958. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.5094300508499146
+[# API Calls 100] loss: 1.4838. Current perf: 0.375. Best perf so far: 0.4375
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3958, device='cuda:0') 0.0
+dev_perf > self.best_dev_perf,dev_perf ,self.best_dev_perf: tensor(0.3958, device='cuda:0') 0.0
+Dev loss: 1.5646. Dev perf: 0.3958. Best dev perf: 0.3958
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.5063344240188599
+[# API Calls 120] loss: 1.484. Current perf: 0.375. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.5036654472351074
+[# API Calls 140] loss: 1.4845. Current perf: 0.375. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.5008488893508911
+[# API Calls 160] loss: 1.4851. Current perf: 0.375. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4982162714004517
+[# API Calls 180] loss: 1.486. Current perf: 0.375. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4958033561706543
+[# API Calls 200] loss: 1.4876. Current perf: 0.3958. Best perf so far: 0.4375
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3958, device='cuda:0') tensor(0.3958, device='cuda:0')
+Dev loss: 1.5645. Dev perf: 0.3958. Best dev perf: 0.3958
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4937314987182617
+[# API Calls 220] loss: 1.4883. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4919781684875488
+[# API Calls 240] loss: 1.4892. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4905743598937988
+[# API Calls 260] loss: 1.4904. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4893101453781128
+[# API Calls 280] loss: 1.4915. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.488141655921936
+[# API Calls 300] loss: 1.4924. Current perf: 0.4167. Best perf so far: 0.4375
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3750, device='cuda:0') tensor(0.3958, device='cuda:0')
+Dev loss: 1.5639. Dev perf: 0.375. Best dev perf: 0.3958
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.487088680267334
+[# API Calls 320] loss: 1.4931. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4861661195755005
+[# API Calls 340] loss: 1.4936. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.485120177268982
+[# API Calls 360] loss: 1.4938. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4841046333312988
+[# API Calls 380] loss: 1.4939. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4831428527832031
+[# API Calls 400] loss: 1.4937. Current perf: 0.4167. Best perf so far: 0.4375
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4167, device='cuda:0') tensor(0.3958, device='cuda:0')
+dev_perf > self.best_dev_perf,dev_perf ,self.best_dev_perf: tensor(0.4167, device='cuda:0') tensor(0.3958, device='cuda:0')
+Dev loss: 1.5611. Dev perf: 0.4167. Best dev perf: 0.4167
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4821401834487915
+[# API Calls 420] loss: 1.4936. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4811371564865112
+[# API Calls 440] loss: 1.4934. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4801286458969116
+[# API Calls 460] loss: 1.4925. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.479150414466858
+[# API Calls 480] loss: 1.4914. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4782114028930664
+[# API Calls 500] loss: 1.4903. Current perf: 0.4167. Best perf so far: 0.4375
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3958, device='cuda:0') tensor(0.4167, device='cuda:0')
+Dev loss: 1.555. Dev perf: 0.3958. Best dev perf: 0.4167
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4772554636001587
+[# API Calls 520] loss: 1.489. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.476197600364685
+[# API Calls 540] loss: 1.4876. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4749573469161987
+[# API Calls 560] loss: 1.486. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4734678268432617
+[# API Calls 580] loss: 1.4841. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4716068506240845
+[# API Calls 600] loss: 1.4818. Current perf: 0.4167. Best perf so far: 0.4375
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4167, device='cuda:0') tensor(0.4167, device='cuda:0')
+Dev loss: 1.549. Dev perf: 0.4167. Best dev perf: 0.4167
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4693697690963745
+[# API Calls 620] loss: 1.4793. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.466901183128357
+[# API Calls 640] loss: 1.4763. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4644404649734497
+[# API Calls 660] loss: 1.4725. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.462166666984558
+[# API Calls 680] loss: 1.4675. Current perf: 0.4167. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.460118293762207
+[# API Calls 700] loss: 1.461. Current perf: 0.4375. Best perf so far: 0.4375
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4583, device='cuda:0') tensor(0.4167, device='cuda:0')
+dev_perf > self.best_dev_perf,dev_perf ,self.best_dev_perf: tensor(0.4583, device='cuda:0') tensor(0.4167, device='cuda:0')
+Dev loss: 1.5444. Dev perf: 0.4583. Best dev perf: 0.4583
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4577218294143677
+[# API Calls 720] loss: 1.4538. Current perf: 0.4375. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4549192190170288
+[# API Calls 740] loss: 1.4467. Current perf: 0.4375. Best perf so far: 0.4375
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4511679410934448
+[# API Calls 760] loss: 1.4404. Current perf: 0.4583. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4465532302856445
+[# API Calls 780] loss: 1.436. Current perf: 0.4583. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4418996572494507
+[# API Calls 800] loss: 1.4322. Current perf: 0.4583. Best perf so far: 0.4583
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4167, device='cuda:0') tensor(0.4583, device='cuda:0')
+Dev loss: 1.525. Dev perf: 0.4167. Best dev perf: 0.4583
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.437057375907898
+[# API Calls 820] loss: 1.4285. Current perf: 0.4167. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4323534965515137
+[# API Calls 840] loss: 1.4257. Current perf: 0.4167. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.428168773651123
+[# API Calls 860] loss: 1.4242. Current perf: 0.4167. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4245119094848633
+[# API Calls 880] loss: 1.4252. Current perf: 0.4167. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4212855100631714
+[# API Calls 900] loss: 1.4274. Current perf: 0.4167. Best perf so far: 0.4583
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4375, device='cuda:0') tensor(0.4583, device='cuda:0')
+Dev loss: 1.5208. Dev perf: 0.4375. Best dev perf: 0.4583
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4185677766799927
+[# API Calls 920] loss: 1.4301. Current perf: 0.4167. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4162497520446777
+[# API Calls 940] loss: 1.4319. Current perf: 0.3958. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4141942262649536
+[# API Calls 960] loss: 1.4331. Current perf: 0.3958. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4124921560287476
+[# API Calls 980] loss: 1.4339. Current perf: 0.3958. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4110407829284668
+[# API Calls 1000] loss: 1.4345. Current perf: 0.375. Best perf so far: 0.4583
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4167, device='cuda:0') tensor(0.4583, device='cuda:0')
+Dev loss: 1.5202. Dev perf: 0.4167. Best dev perf: 0.4583
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4098275899887085
+[# API Calls 1020] loss: 1.4346. Current perf: 0.3542. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4087499380111694
+[# API Calls 1040] loss: 1.4345. Current perf: 0.3542. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4077948331832886
+[# API Calls 1060] loss: 1.4353. Current perf: 0.3542. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4070658683776855
+[# API Calls 1080] loss: 1.4328. Current perf: 0.3542. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4067634344100952
+[# API Calls 1100] loss: 1.4329. Current perf: 0.3542. Best perf so far: 0.4583
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4375, device='cuda:0') tensor(0.4583, device='cuda:0')
+Dev loss: 1.5231. Dev perf: 0.4375. Best dev perf: 0.4583
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4066953659057617
+[# API Calls 1120] loss: 1.4332. Current perf: 0.3542. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4066509008407593
+[# API Calls 1140] loss: 1.4334. Current perf: 0.3542. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4062985181808472
+[# API Calls 1160] loss: 1.4333. Current perf: 0.3542. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4055198431015015
+[# API Calls 1180] loss: 1.4329. Current perf: 0.375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4043635129928589
+[# API Calls 1200] loss: 1.4323. Current perf: 0.375. Best perf so far: 0.4583
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4792, device='cuda:0') tensor(0.4583, device='cuda:0')
+dev_perf > self.best_dev_perf,dev_perf ,self.best_dev_perf: tensor(0.4792, device='cuda:0') tensor(0.4583, device='cuda:0')
+Dev loss: 1.5257. Dev perf: 0.4792. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.402992844581604
+[# API Calls 1220] loss: 1.4313. Current perf: 0.375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.401646614074707
+[# API Calls 1240] loss: 1.4301. Current perf: 0.375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4004026651382446
+[# API Calls 1260] loss: 1.4287. Current perf: 0.375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3992449045181274
+[# API Calls 1280] loss: 1.4271. Current perf: 0.375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3981844186782837
+[# API Calls 1300] loss: 1.4253. Current perf: 0.375. Best perf so far: 0.4583
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4583, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.5234. Dev perf: 0.4583. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3972433805465698
+[# API Calls 1320] loss: 1.4237. Current perf: 0.375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3964465856552124
+[# API Calls 1340] loss: 1.4221. Current perf: 0.375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3957403898239136
+[# API Calls 1360] loss: 1.4205. Current perf: 0.375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3951506614685059
+[# API Calls 1380] loss: 1.4188. Current perf: 0.375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3946644067764282
+[# API Calls 1400] loss: 1.4172. Current perf: 0.375. Best perf so far: 0.4583
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4375, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.5205. Dev perf: 0.4375. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3943228721618652
+[# API Calls 1420] loss: 1.4157. Current perf: 0.375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3941030502319336
+[# API Calls 1440] loss: 1.4142. Current perf: 0.375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3940101861953735
+[# API Calls 1460] loss: 1.4127. Current perf: 0.375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3940268754959106
+[# API Calls 1480] loss: 1.4114. Current perf: 0.375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3941326141357422
+[# API Calls 1500] loss: 1.4102. Current perf: 0.375. Best perf so far: 0.4583
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4583, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.5171. Dev perf: 0.4583. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.394347071647644
+[# API Calls 1520] loss: 1.409. Current perf: 0.375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3946627378463745
+[# API Calls 1540] loss: 1.4076. Current perf: 0.3958. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3951221704483032
+[# API Calls 1560] loss: 1.406. Current perf: 0.3958. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3957452774047852
+[# API Calls 1580] loss: 1.4043. Current perf: 0.3958. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3964909315109253
+[# API Calls 1600] loss: 1.4028. Current perf: 0.3958. Best perf so far: 0.4583
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4583, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.5128. Dev perf: 0.4583. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.39730966091156
+[# API Calls 1620] loss: 1.4016. Current perf: 0.4167. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.398168683052063
+[# API Calls 1640] loss: 1.4004. Current perf: 0.4167. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3990346193313599
+[# API Calls 1660] loss: 1.3991. Current perf: 0.4167. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.399906039237976
+[# API Calls 1680] loss: 1.3979. Current perf: 0.4167. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4007772207260132
+[# API Calls 1700] loss: 1.3969. Current perf: 0.4167. Best perf so far: 0.4583
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4375, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.506. Dev perf: 0.4375. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4016519784927368
+[# API Calls 1720] loss: 1.3964. Current perf: 0.4167. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4025487899780273
+[# API Calls 1740] loss: 1.3978. Current perf: 0.4167. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.403480052947998
+[# API Calls 1760] loss: 1.397. Current perf: 0.4375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.404473900794983
+[# API Calls 1780] loss: 1.3963. Current perf: 0.4375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4055553674697876
+[# API Calls 1800] loss: 1.3959. Current perf: 0.4375. Best perf so far: 0.4583
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4375, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4987. Dev perf: 0.4375. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4066377878189087
+[# API Calls 1820] loss: 1.3956. Current perf: 0.4375. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.407709002494812
+[# API Calls 1840] loss: 1.3953. Current perf: 0.4583. Best perf so far: 0.4583
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4087276458740234
+[# API Calls 1860] loss: 1.395. Current perf: 0.4792. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.409813404083252
+[# API Calls 1880] loss: 1.3949. Current perf: 0.4792. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4110101461410522
+[# API Calls 1900] loss: 1.3947. Current perf: 0.4583. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4375, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4936. Dev perf: 0.4375. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4121829271316528
+[# API Calls 1920] loss: 1.3944. Current perf: 0.4583. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4132148027420044
+[# API Calls 1940] loss: 1.3942. Current perf: 0.4583. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4140483140945435
+[# API Calls 1960] loss: 1.3939. Current perf: 0.4583. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4147543907165527
+[# API Calls 1980] loss: 1.3938. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4153441190719604
+[# API Calls 2000] loss: 1.3936. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4375, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4884. Dev perf: 0.4375. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.41586172580719
+[# API Calls 2020] loss: 1.3935. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4163079261779785
+[# API Calls 2040] loss: 1.3934. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.416703224182129
+[# API Calls 2060] loss: 1.3932. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4170392751693726
+[# API Calls 2080] loss: 1.3931. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4173173904418945
+[# API Calls 2100] loss: 1.3929. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4583, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4852. Dev perf: 0.4583. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4175515174865723
+[# API Calls 2120] loss: 1.3928. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.417772889137268
+[# API Calls 2140] loss: 1.3926. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4179834127426147
+[# API Calls 2160] loss: 1.3925. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4182230234146118
+[# API Calls 2180] loss: 1.3925. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4184722900390625
+[# API Calls 2200] loss: 1.3925. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4375, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4843. Dev perf: 0.4375. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4187350273132324
+[# API Calls 2220] loss: 1.3926. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4189835786819458
+[# API Calls 2240] loss: 1.3927. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4192767143249512
+[# API Calls 2260] loss: 1.3928. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4196103811264038
+[# API Calls 2280] loss: 1.3929. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4199706315994263
+[# API Calls 2300] loss: 1.393. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4375, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4852. Dev perf: 0.4375. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.420315146446228
+[# API Calls 2320] loss: 1.393. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4206281900405884
+[# API Calls 2340] loss: 1.3931. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4209223985671997
+[# API Calls 2360] loss: 1.3931. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.421185851097107
+[# API Calls 2380] loss: 1.3931. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.421383023262024
+[# API Calls 2400] loss: 1.3932. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4375, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4885. Dev perf: 0.4375. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4215574264526367
+[# API Calls 2420] loss: 1.3933. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4216362237930298
+[# API Calls 2440] loss: 1.3934. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4216643571853638
+[# API Calls 2460] loss: 1.3937. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4216346740722656
+[# API Calls 2480] loss: 1.3939. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.421607494354248
+[# API Calls 2500] loss: 1.3943. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4375, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4901. Dev perf: 0.4375. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4215492010116577
+[# API Calls 2520] loss: 1.3946. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4214659929275513
+[# API Calls 2540] loss: 1.3949. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.421392560005188
+[# API Calls 2560] loss: 1.3952. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4213446378707886
+[# API Calls 2580] loss: 1.3955. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4213558435440063
+[# API Calls 2600] loss: 1.3957. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4375, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4928. Dev perf: 0.4375. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.421442985534668
+[# API Calls 2620] loss: 1.3961. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4215720891952515
+[# API Calls 2640] loss: 1.3958. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4216909408569336
+[# API Calls 2660] loss: 1.3963. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.42167329788208
+[# API Calls 2680] loss: 1.3969. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4214996099472046
+[# API Calls 2700] loss: 1.3973. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4167, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4962. Dev perf: 0.4167. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4213199615478516
+[# API Calls 2720] loss: 1.3976. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.42112398147583
+[# API Calls 2740] loss: 1.3978. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.420883297920227
+[# API Calls 2760] loss: 1.3979. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4206185340881348
+[# API Calls 2780] loss: 1.3979. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4203706979751587
+[# API Calls 2800] loss: 1.3979. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4167, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4985. Dev perf: 0.4167. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4200849533081055
+[# API Calls 2820] loss: 1.3979. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4197211265563965
+[# API Calls 2840] loss: 1.3978. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4188810586929321
+[# API Calls 2860] loss: 1.3978. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4183963537216187
+[# API Calls 2880] loss: 1.3977. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4183274507522583
+[# API Calls 2900] loss: 1.3977. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4167, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4999. Dev perf: 0.4167. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4177833795547485
+[# API Calls 2920] loss: 1.3976. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4172919988632202
+[# API Calls 2940] loss: 1.3976. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4168869256973267
+[# API Calls 2960] loss: 1.3975. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4165797233581543
+[# API Calls 2980] loss: 1.3975. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4163099527359009
+[# API Calls 3000] loss: 1.3974. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3958, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.5005. Dev perf: 0.3958. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.416062831878662
+[# API Calls 3020] loss: 1.3973. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4158316850662231
+[# API Calls 3040] loss: 1.3972. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4156051874160767
+[# API Calls 3060] loss: 1.3971. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.415413498878479
+[# API Calls 3080] loss: 1.397. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4152415990829468
+[# API Calls 3100] loss: 1.3969. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3958, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.5002. Dev perf: 0.3958. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4150534868240356
+[# API Calls 3120] loss: 1.3968. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.414881706237793
+[# API Calls 3140] loss: 1.3968. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4147826433181763
+[# API Calls 3160] loss: 1.3966. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4147281646728516
+[# API Calls 3180] loss: 1.3964. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4147199392318726
+[# API Calls 3200] loss: 1.3961. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3958, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4995. Dev perf: 0.3958. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4147802591323853
+[# API Calls 3220] loss: 1.3957. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4148740768432617
+[# API Calls 3240] loss: 1.3954. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4150381088256836
+[# API Calls 3260] loss: 1.3954. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4153255224227905
+[# API Calls 3280] loss: 1.3959. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4154328107833862
+[# API Calls 3300] loss: 1.396. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3958, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4985. Dev perf: 0.3958. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4152008295059204
+[# API Calls 3320] loss: 1.3961. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4159106016159058
+[# API Calls 3340] loss: 1.3961. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4163728952407837
+[# API Calls 3360] loss: 1.396. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4165183305740356
+[# API Calls 3380] loss: 1.3959. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4165782928466797
+[# API Calls 3400] loss: 1.3958. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3958, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4973. Dev perf: 0.3958. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4166189432144165
+[# API Calls 3420] loss: 1.3956. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4166237115859985
+[# API Calls 3440] loss: 1.3954. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4165631532669067
+[# API Calls 3460] loss: 1.3954. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4163986444473267
+[# API Calls 3480] loss: 1.3952. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4162064790725708
+[# API Calls 3500] loss: 1.3952. Current perf: 0.4167. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4167, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4961. Dev perf: 0.4167. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4159857034683228
+[# API Calls 3520] loss: 1.3952. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.41566801071167
+[# API Calls 3540] loss: 1.3952. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4152849912643433
+[# API Calls 3560] loss: 1.3952. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4148354530334473
+[# API Calls 3580] loss: 1.3953. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.414259433746338
+[# API Calls 3600] loss: 1.3955. Current perf: 0.4167. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4167, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.495. Dev perf: 0.4167. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4135998487472534
+[# API Calls 3620] loss: 1.3956. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4128693342208862
+[# API Calls 3640] loss: 1.3958. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4120837450027466
+[# API Calls 3660] loss: 1.3959. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.411219596862793
+[# API Calls 3680] loss: 1.396. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4102994203567505
+[# API Calls 3700] loss: 1.3961. Current perf: 0.4167. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4167, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4927. Dev perf: 0.4167. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4093103408813477
+[# API Calls 3720] loss: 1.3961. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.408293604850769
+[# API Calls 3740] loss: 1.3962. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4071918725967407
+[# API Calls 3760] loss: 1.3963. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4060291051864624
+[# API Calls 3780] loss: 1.3964. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4047327041625977
+[# API Calls 3800] loss: 1.3966. Current perf: 0.4167. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4167, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4929. Dev perf: 0.4167. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.403378963470459
+[# API Calls 3820] loss: 1.3967. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4019842147827148
+[# API Calls 3840] loss: 1.397. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.4005335569381714
+[# API Calls 3860] loss: 1.3973. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3990448713302612
+[# API Calls 3880] loss: 1.3977. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.397525668144226
+[# API Calls 3900] loss: 1.398. Current perf: 0.4167. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3958, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.493. Dev perf: 0.3958. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.396006464958191
+[# API Calls 3920] loss: 1.3984. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3944555521011353
+[# API Calls 3940] loss: 1.3988. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3929294347763062
+[# API Calls 3960] loss: 1.3992. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3914333581924438
+[# API Calls 3980] loss: 1.3997. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3899606466293335
+[# API Calls 4000] loss: 1.4002. Current perf: 0.4167. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3958, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4929. Dev perf: 0.3958. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3885377645492554
+[# API Calls 4020] loss: 1.4008. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.387198567390442
+[# API Calls 4040] loss: 1.4014. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.38592529296875
+[# API Calls 4060] loss: 1.4021. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3847880363464355
+[# API Calls 4080] loss: 1.4028. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.383719563484192
+[# API Calls 4100] loss: 1.4036. Current perf: 0.4167. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3958, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.492. Dev perf: 0.3958. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3827204704284668
+[# API Calls 4120] loss: 1.4043. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3818556070327759
+[# API Calls 4140] loss: 1.405. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.380774974822998
+[# API Calls 4160] loss: 1.4057. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3798273801803589
+[# API Calls 4180] loss: 1.4063. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3790631294250488
+[# API Calls 4200] loss: 1.4067. Current perf: 0.4583. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3750, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4941. Dev perf: 0.375. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3783913850784302
+[# API Calls 4220] loss: 1.407. Current perf: 0.4583. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3777527809143066
+[# API Calls 4240] loss: 1.4073. Current perf: 0.4583. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3771334886550903
+[# API Calls 4260] loss: 1.4076. Current perf: 0.4583. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3764729499816895
+[# API Calls 4280] loss: 1.4079. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.375789999961853
+[# API Calls 4300] loss: 1.4081. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3750, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4979. Dev perf: 0.375. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3751091957092285
+[# API Calls 4320] loss: 1.4081. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3744525909423828
+[# API Calls 4340] loss: 1.408. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3737891912460327
+[# API Calls 4360] loss: 1.4076. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3731441497802734
+[# API Calls 4380] loss: 1.4063. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3725485801696777
+[# API Calls 4400] loss: 1.4062. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3542, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.5012. Dev perf: 0.3542. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3720089197158813
+[# API Calls 4420] loss: 1.4059. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.371530532836914
+[# API Calls 4440] loss: 1.4063. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3710798025131226
+[# API Calls 4460] loss: 1.4063. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3706952333450317
+[# API Calls 4480] loss: 1.406. Current perf: 0.4375. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.370370864868164
+[# API Calls 4500] loss: 1.4058. Current perf: 0.4375. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3542, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.5051. Dev perf: 0.3542. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3701024055480957
+[# API Calls 4520] loss: 1.4055. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3698774576187134
+[# API Calls 4540] loss: 1.4052. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3696742057800293
+[# API Calls 4560] loss: 1.405. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3695201873779297
+[# API Calls 4580] loss: 1.4048. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3693976402282715
+[# API Calls 4600] loss: 1.4047. Current perf: 0.4167. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3542, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.5089. Dev perf: 0.3542. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3693193197250366
+[# API Calls 4620] loss: 1.4045. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3692485094070435
+[# API Calls 4640] loss: 1.4044. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3691678047180176
+[# API Calls 4660] loss: 1.4042. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3691037893295288
+[# API Calls 4680] loss: 1.4041. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.369063377380371
+[# API Calls 4700] loss: 1.4041. Current perf: 0.4167. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3542, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.5107. Dev perf: 0.3542. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.369040846824646
+[# API Calls 4720] loss: 1.4041. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3690460920333862
+[# API Calls 4740] loss: 1.4041. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3690752983093262
+[# API Calls 4760] loss: 1.404. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3691235780715942
+[# API Calls 4780] loss: 1.404. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.369187831878662
+[# API Calls 4800] loss: 1.4039. Current perf: 0.4167. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3542, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.5096. Dev perf: 0.3542. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3692740201950073
+[# API Calls 4820] loss: 1.4038. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.369387149810791
+[# API Calls 4840] loss: 1.4036. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3695255517959595
+[# API Calls 4860] loss: 1.4034. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3696807622909546
+[# API Calls 4880] loss: 1.4033. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.369874358177185
+[# API Calls 4900] loss: 1.4031. Current perf: 0.4167. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3542, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.5071. Dev perf: 0.3542. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3700910806655884
+[# API Calls 4920] loss: 1.403. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.370323657989502
+[# API Calls 4940] loss: 1.4028. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3705801963806152
+[# API Calls 4960] loss: 1.4027. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3708515167236328
+[# API Calls 4980] loss: 1.4025. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.371134877204895
+[# API Calls 5000] loss: 1.4023. Current perf: 0.3958. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3542, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.504. Dev perf: 0.3542. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3714523315429688
+[# API Calls 5020] loss: 1.4021. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3718420267105103
+[# API Calls 5040] loss: 1.4019. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3723021745681763
+[# API Calls 5060] loss: 1.4017. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3726378679275513
+[# API Calls 5080] loss: 1.4014. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3728923797607422
+[# API Calls 5100] loss: 1.401. Current perf: 0.3958. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.3958, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.5011. Dev perf: 0.3958. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3731805086135864
+[# API Calls 5120] loss: 1.4007. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.373531699180603
+[# API Calls 5140] loss: 1.4003. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3739053010940552
+[# API Calls 5160] loss: 1.3999. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3743125200271606
+[# API Calls 5180] loss: 1.3996. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3747349977493286
+[# API Calls 5200] loss: 1.3992. Current perf: 0.4167. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4167, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4982. Dev perf: 0.4167. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3751908540725708
+[# API Calls 5220] loss: 1.3989. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3756762742996216
+[# API Calls 5240] loss: 1.3986. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3761595487594604
+[# API Calls 5260] loss: 1.3983. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.376656413078308
+[# API Calls 5280] loss: 1.398. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3771637678146362
+[# API Calls 5300] loss: 1.3976. Current perf: 0.4167. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4167, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4954. Dev perf: 0.4167. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3776377439498901
+[# API Calls 5320] loss: 1.3971. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3780927658081055
+[# API Calls 5340] loss: 1.3965. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3785394430160522
+[# API Calls 5360] loss: 1.3959. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3789368867874146
+[# API Calls 5380] loss: 1.3952. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.379257082939148
+[# API Calls 5400] loss: 1.3945. Current perf: 0.4167. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4375, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4921. Dev perf: 0.4375. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.379561424255371
+[# API Calls 5420] loss: 1.3936. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3798800706863403
+[# API Calls 5440] loss: 1.3926. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3801994323730469
+[# API Calls 5460] loss: 1.3916. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.380453109741211
+[# API Calls 5480] loss: 1.3905. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.380733609199524
+[# API Calls 5500] loss: 1.3894. Current perf: 0.4167. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4583, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4902. Dev perf: 0.4583. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3810044527053833
+[# API Calls 5520] loss: 1.3884. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.381253719329834
+[# API Calls 5540] loss: 1.3874. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3814797401428223
+[# API Calls 5560] loss: 1.3865. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3816951513290405
+[# API Calls 5580] loss: 1.3855. Current perf: 0.4167. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3818868398666382
+[# API Calls 5600] loss: 1.3848. Current perf: 0.3958. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4583, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4885. Dev perf: 0.4583. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3820691108703613
+[# API Calls 5620] loss: 1.3841. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3822187185287476
+[# API Calls 5640] loss: 1.3834. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3823498487472534
+[# API Calls 5660] loss: 1.3828. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.382442593574524
+[# API Calls 5680] loss: 1.3821. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3824998140335083
+[# API Calls 5700] loss: 1.3815. Current perf: 0.3958. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4583, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4879. Dev perf: 0.4583. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.382551670074463
+[# API Calls 5720] loss: 1.3809. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.382613182067871
+[# API Calls 5740] loss: 1.3803. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3826957941055298
+[# API Calls 5760] loss: 1.3797. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.382763385772705
+[# API Calls 5780] loss: 1.3792. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3827921152114868
+[# API Calls 5800] loss: 1.3785. Current perf: 0.3958. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4583, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4866. Dev perf: 0.4583. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3827943801879883
+[# API Calls 5820] loss: 1.3777. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.382700800895691
+[# API Calls 5840] loss: 1.377. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.382596492767334
+[# API Calls 5860] loss: 1.3763. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3824588060379028
+[# API Calls 5880] loss: 1.3756. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3821464776992798
+[# API Calls 5900] loss: 1.3749. Current perf: 0.3958. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4583, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.4849. Dev perf: 0.4583. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3817952871322632
+[# API Calls 5920] loss: 1.3742. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3813060522079468
+[# API Calls 5940] loss: 1.3736. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.380689263343811
+[# API Calls 5960] loss: 1.373. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3801356554031372
+[# API Calls 5980] loss: 1.3724. Current perf: 0.3958. Best perf so far: 0.4792
+#####result[1]: 0.5
+#####fitness_list[0]: -1.3796314001083374
+[# API Calls 6000] loss: 1.3717. Current perf: 0.3958. Best perf so far: 0.4792
+********* Evaluated on dev set *********
+dev_perf ,self.best_dev_perf: tensor(0.4375, device='cuda:0') tensor(0.4792, device='cuda:0')
+Dev loss: 1.483. Dev perf: 0.4375. Best dev perf: 0.4792
+********* Done *********
+#####result[1]: 0.5
+#####fitness_list[0]: -1.379201889038086
+Done. Elapsed time: 57.682864769299826 (mins)
+20220922-01:40 ---> 20220922-02:39 Totl:3507 seconds

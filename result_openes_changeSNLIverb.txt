@@ -1,0 +1,53 @@
+nohup: ignoring input
+###################################
+weight_decay: 0.0
+###################################
+Using custom data configuration default
+Reusing dataset snli (/root/.cache/huggingface/datasets/snli/default/0.0.0/73c7063d1d6ea6b34d71b18b0947826472535af1ea5ac5bdf0149db07367524f)
+Loading cached processed dataset at /root/.cache/huggingface/datasets/snli/default/0.0.0/73c7063d1d6ea6b34d71b18b0947826472535af1ea5ac5bdf0149db07367524f/cache-e07f58dc7ebf28d1.arrow
+  0%|          | 0/48 [00:00<?, ?ex/s]100%|██████████| 48/48 [00:00<00:00, 2886.94ex/s]
+{'text1': 'Girl in plaid shirt riding a unicycle.', 'text2': 'A girl is riding.', 'labels': 0, 'input_text': "Xro target himself turn Europe worked energy scored * soon ball TV annual 2013 race International'd Market conferenceio o changesig officers inside form published phone co legal executive fightings hope summer officer football property@ book parents costsac manager create age email markets main . Girl in plaid shirt riding a unicycle. ? <mask> , A girl is riding.", 'target_text': 'Regardless'}
+  0%|          | 0/1 [00:00<?, ?ba/s]100%|██████████| 1/1 [00:00<00:00, 16.46ba/s]
+Using custom data configuration default
+Reusing dataset snli (/root/.cache/huggingface/datasets/snli/default/0.0.0/73c7063d1d6ea6b34d71b18b0947826472535af1ea5ac5bdf0149db07367524f)
+Loading cached processed dataset at /root/.cache/huggingface/datasets/snli/default/0.0.0/73c7063d1d6ea6b34d71b18b0947826472535af1ea5ac5bdf0149db07367524f/cache-b7f876643b92cc22.arrow
+  0%|          | 0/48 [00:00<?, ?ex/s]100%|██████████| 48/48 [00:00<00:00, 3370.84ex/s]
+{'text1': 'People using an outdoor ice skating rink.', 'text2': 'The people are on a plane.', 'labels': 2, 'input_text': "Xro target himself turn Europe worked energy scored * soon ball TV annual 2013 race International'd Market conferenceio o changesig officers inside form published phone co legal executive fightings hope summer officer football property@ book parents costsac manager create age email markets main . People using an outdoor ice skating rink. ? <mask> , The people are on a plane.", 'target_text': 'Unless'}
+  0%|          | 0/1 [00:00<?, ?ba/s]100%|██████████| 1/1 [00:00<00:00, 23.70ba/s]
+# of train data: 48
+Example:
++------------------------+------------------------+----------+--------+
+| input_ids              | attention_mask         | mask_pos | labels |
++------------------------+------------------------+----------+--------+
+| [0, 1000, 1001, 100... | [1, 1, 1, 1, 1, 1, ... | 63       | 38861  |
++------------------------+------------------------+----------+--------+
+
+# of dev data: 48
+Example:
++------------------------+------------------------+----------+--------+
+| input_ids              | attention_mask         | mask_pos | labels |
++------------------------+------------------------+----------+--------+
+| [0, 1000, 1001, 100... | [1, 1, 1, 1, 1, 1, ... | 61       | 33757  |
++------------------------+------------------------+----------+--------+
+Some weights of RobertaForMaskedLM were not initialized from the model checkpoint at roberta-large and are newly initialized: ['lm_head.decoder.bias']
+You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.
+Traceback (most recent call last):
+  File "bbt.py", line 596, in <module>
+    model_forward_api = LMForwardAPI(
+  File "bbt.py", line 223, in __init__
+    self.model.to(device)
+  File "/root/anaconda3/envs/bbt/lib/python3.8/site-packages/torch/nn/modules/module.py", line 927, in to
+    return self._apply(convert)
+  File "/root/anaconda3/envs/bbt/lib/python3.8/site-packages/torch/nn/modules/module.py", line 579, in _apply
+    module._apply(fn)
+  File "/root/anaconda3/envs/bbt/lib/python3.8/site-packages/torch/nn/modules/module.py", line 579, in _apply
+    module._apply(fn)
+  File "/root/anaconda3/envs/bbt/lib/python3.8/site-packages/torch/nn/modules/module.py", line 579, in _apply
+    module._apply(fn)
+  [Previous line repeated 3 more times]
+  File "/root/anaconda3/envs/bbt/lib/python3.8/site-packages/torch/nn/modules/module.py", line 602, in _apply
+    param_applied = fn(param)
+  File "/root/anaconda3/envs/bbt/lib/python3.8/site-packages/torch/nn/modules/module.py", line 925, in convert
+    return t.to(device, dtype if t.is_floating_point() or t.is_complex() else None, non_blocking)
+RuntimeError: CUDA out of memory. Tried to allocate 16.00 MiB (GPU 0; 31.75 GiB total capacity; 362.94 MiB already allocated; 32.19 MiB free; 380.00 MiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
+20220922-09:04 ---> 20220922-09:05 Totl:55 seconds
