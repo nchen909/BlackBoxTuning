@@ -14,7 +14,7 @@
             "args":[
                 "--seed","8",
                 "--task_name","SNLI",
-                "--alg","DFO_tr",
+                "--alg","CMA",
                 "--sigma","1",
             ]
         }

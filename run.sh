@@ -20,7 +20,8 @@ learning_rate_lst=(0.2)
 sigma_lst=(1)
 weight_decay_lst=(0)
 
-alg=DFO_tr
+#alg=DFO_tr
+alg=L-BFGS-B
 cuda=0
 
 for task_name in "${task_name_lst[@]}"; do
