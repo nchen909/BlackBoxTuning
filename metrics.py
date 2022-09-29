@@ -178,6 +178,74 @@ class AGNewsMetric(MetricBase):
                 'ce': ce_loss}
 
 
+class DBPediaMetric(MetricBase):
+    def __init__(self, pred=None, target=None, seq_len=None, tokenizer=None):
+        super().__init__()
+        self._init_param_map(pred=pred, target=target, seq_len=seq_len)
+        self._pred = []
+        self._target = []
+        self.hinge = 0.0
+        self.ce_loss = 0.0
+        self.ce_fct = nn.CrossEntropyLoss(reduction='sum')
+        self.margin = 2
+        if tokenizer is None:
+            tokenizer = RobertaTokenizer.from_pretrained('roberta-large')
+        self.label_map = {
+            tokenizer.encode('Company', add_special_tokens=False)[0]: 0,
+            tokenizer.encode('Education', add_special_tokens=False)[0]: 1,
+            tokenizer.encode('Artist', add_special_tokens=False)[0]: 2,
+            tokenizer.encode('Athlete', add_special_tokens=False)[0]: 3,
+            tokenizer.encode('Office', add_special_tokens=False)[0]: 4,
+            tokenizer.encode('Transportation', add_special_tokens=False)[0]: 5,
+            tokenizer.encode('Building', add_special_tokens=False)[0]: 6,
+            tokenizer.encode('Natural', add_special_tokens=False)[0]: 7,
+            tokenizer.encode('Village', add_special_tokens=False)[0]: 8,
+            tokenizer.encode('Animal', add_special_tokens=False)[0]: 9,
+            tokenizer.encode('Plant', add_special_tokens=False)[0]: 10,
+            tokenizer.encode('Album', add_special_tokens=False)[0]: 11,
+            tokenizer.encode('Film', add_special_tokens=False)[0]: 12,
+            tokenizer.encode('Written', add_special_tokens=False)[0]: 13,
+        }
+
+    def evaluate(self, pred, target, seq_len=None):
+        if not isinstance(pred, torch.Tensor):
+            raise TypeError(f"`pred` in {_get_func_signature(self.evaluate)} must be torch.Tensor,"
+                            f"got {type(pred)}.")
+        if not isinstance(target, torch.Tensor):
+            raise TypeError(f"`target` in {_get_func_signature(self.evaluate)} must be torch.Tensor,"
+                            f"got {type(target)}.")
+        # pred: batch_size x seq_len x vocab_size
+        self.ce_loss += self.ce_fct(pred, target).item()
+
+        # calculate hinge loss
+        hinge_target = target.clone()
+        for key, val in self.label_map.items():
+            hinge_target[target==key] = val
+
+        for t in hinge_target.cpu().numpy().tolist():
+            self._target.append(t)
+
+        interest_index = list(self.label_map.keys())
+        pred = pred[:, interest_index]
+        self.hinge += hinge_loss(pred, hinge_target, self.margin, reduction='sum').item()
+        pred = pred.argmax(dim=-1).detach().cpu().numpy().tolist()
+        self._pred.extend(pred)
+
+
+    def get_metric(self, reset=True):
+        acc = accuracy_score(self._target, self._pred)
+        hinge_loss = self.hinge / len(self._target)
+        ce_loss = self.ce_loss / len(self._target)
+        if reset:
+            self._target = []
+            self._pred = []
+            self.hinge = 0.0
+            self.ce_loss = 0.0
+        return {'acc': acc,
+                'hinge': hinge_loss,
+                'ce': ce_loss}
+
+
 class MRPCMetric(MetricBase):
     def __init__(self, pred=None, target=None, seq_len=None, tokenizer=None):
         super().__init__()
@@ -221,6 +289,100 @@ class MRPCMetric(MetricBase):
 
 
     def get_metric(self, reset=True):
+        f1 = f1_score(self._target, self._pred)
+        hinge_loss = self.hinge / len(self._target)
+        ce_loss = self.ce_loss / len(self._target)
+        if reset:
+            self._target = []
+            self._pred = []
+            self.hinge = 0.0
+            self.ce_loss = 0.0
+        return {'f1': f1,
+                'hinge': hinge_loss,
+                'ce': ce_loss}
+
+
+class MNLIMetric(MetricBase):
+    def __init__(self, pred=None, target=None, seq_len=None, tokenizer=None):
+        super().__init__()
+        self._init_param_map(pred=pred, target=target, seq_len=seq_len)
+        self._pred = []
+        self._target = []
+        if tokenizer is None:
+            tokenizer = RobertaTokenizer.from_pretrained('roberta-large')
+        self.label_map = {
+            tokenizer.encode('Yes', add_special_tokens=False)[0]: 0,
+            tokenizer.encode('Maybe', add_special_tokens=False)[0]: 1,
+            tokenizer.encode('No', add_special_tokens=False)[0]: 2,
+        }
+
+    def evaluate(self, pred, target, seq_len=None):
+        if not isinstance(pred, torch.Tensor):
+            raise TypeError(f"`pred` in {_get_func_signature(self.evaluate)} must be torch.Tensor,"
+                            f"got {type(pred)}.")
+        if not isinstance(target, torch.Tensor):
+            raise TypeError(f"`target` in {_get_func_signature(self.evaluate)} must be torch.Tensor,"
+                            f"got {type(target)}.")
+
+        target = target.cpu().numpy().tolist()
+        for t in target:
+            self._target.append(self.label_map[t])
+
+        interest_index = list(self.label_map.keys())
+        pred = pred[:, interest_index].argmax(dim=-1).detach().cpu().numpy().tolist()
+        self._pred.extend(pred)
+
+
+    def get_metric(self, reset=True):
+        acc = accuracy_score(self._target, self._pred)
+        if reset:
+            self._target = []
+            self._pred = []
+        return {'acc': acc}
+
+
+class RTEMetric(MetricBase):
+    def __init__(self, pred=None, target=None, seq_len=None, tokenizer=None):
+        super().__init__()
+        self._init_param_map(pred=pred, target=target, seq_len=seq_len)
+        self._pred = []
+        self._target = []
+        self.hinge = 0.0
+        self.ce_loss = 0.0
+        self.ce_fct = nn.CrossEntropyLoss(reduction='sum')
+        self.margin = 2
+        if tokenizer is None:
+            tokenizer = RobertaTokenizer.from_pretrained('roberta-large')
+        self.label_map = {
+            tokenizer.encode('Yes', add_special_tokens=False)[0]: 0,
+            tokenizer.encode('No', add_special_tokens=False)[0]: 1,
+        }
+
+    def evaluate(self, pred, target, seq_len=None):
+        if not isinstance(pred, torch.Tensor):
+            raise TypeError(f"`pred` in {_get_func_signature(self.evaluate)} must be torch.Tensor,"
+                            f"got {type(pred)}.")
+        if not isinstance(target, torch.Tensor):
+            raise TypeError(f"`target` in {_get_func_signature(self.evaluate)} must be torch.Tensor,"
+                            f"got {type(target)}.")
+        # pred: batch_size x seq_len x vocab_size
+        self.ce_loss += self.ce_fct(pred, target).item()
+
+        # calculate hinge loss
+        hinge_target = target.clone()
+        for key, val in self.label_map.items():
+            hinge_target[target==key] = val
+
+        for t in hinge_target.cpu().numpy().tolist():
+            self._target.append(t)
+
+        interest_index = list(self.label_map.keys())
+        pred = pred[:, interest_index]
+        self.hinge += hinge_loss(pred, hinge_target, self.margin, reduction='sum').item()
+        pred = pred.argmax(dim=-1).detach().cpu().numpy().tolist()
+        self._pred.extend(pred)
+
+    def get_metric(self, reset=True):
         acc = accuracy_score(self._target, self._pred)
         hinge_loss = self.hinge / len(self._target)
         ce_loss = self.ce_loss / len(self._target)
@@ -232,6 +394,7 @@ class MRPCMetric(MetricBase):
         return {'acc': acc,
                 'hinge': hinge_loss,
                 'ce': ce_loss}
+
 
 
 class SNLIMetric(MetricBase):
@@ -250,15 +413,15 @@ class SNLIMetric(MetricBase):
             if change_or_not==0:
                 return verb_
             if verb_ == 'No':
-                return 'Unless'
+                return 'Unless'#'Except'
             elif verb_ == 'Maybe':
-                return 'Fortunately'
+                return 'Fortunately'#'Watch'
             elif verb_ == 'Yes':
-                return 'Regardless'
+                return 'Regardless'#'Alright'
         self.label_map = {
-            tokenizer.encode(change_SNLI_verb('Yes',0), add_special_tokens=False)[0]: 0,
-            tokenizer.encode(change_SNLI_verb('Maybe',0), add_special_tokens=False)[0]: 1,
-            tokenizer.encode(change_SNLI_verb('No',0), add_special_tokens=False)[0]: 2,
+            tokenizer.encode(change_SNLI_verb('Yes',1), add_special_tokens=False)[0]: 0,
+            tokenizer.encode(change_SNLI_verb('Maybe',1), add_special_tokens=False)[0]: 1,
+            tokenizer.encode(change_SNLI_verb('No',1), add_special_tokens=False)[0]: 2,
         }
 
     def evaluate(self, pred, target, seq_len=None):
@@ -312,12 +475,12 @@ class TRECMetric(MetricBase):
         if tokenizer is None:
             tokenizer = RobertaTokenizer.from_pretrained('roberta-large')
         self.label_map = {
-            tokenizer.encode('description', add_special_tokens=False)[0]: 0,
-            tokenizer.encode('entity', add_special_tokens=False)[0]: 1,
-            tokenizer.encode('abbreviation', add_special_tokens=False)[0]: 2,
-            tokenizer.encode('human', add_special_tokens=False)[0]: 3,
-            tokenizer.encode('numeric', add_special_tokens=False)[0]: 4,
-            tokenizer.encode('location', add_special_tokens=False)[0]: 5,
+            tokenizer.encode('Description', add_special_tokens=False)[0]: 0,
+            tokenizer.encode('Entity', add_special_tokens=False)[0]: 1,
+            tokenizer.encode('Abbreviation', add_special_tokens=False)[0]: 2,
+            tokenizer.encode('Human', add_special_tokens=False)[0]: 3,
+            tokenizer.encode('Numeric', add_special_tokens=False)[0]: 4,
+            tokenizer.encode('Location', add_special_tokens=False)[0]: 5,
         }
 
     def evaluate(self, pred, target, seq_len=None):
