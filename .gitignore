@@ -1,0 +1,10 @@
+*.zip
+*.log
+*.csv
+*.pt
+*.pyc
+*.bin
+*.pickle
+result*
+*.dat
+.history
