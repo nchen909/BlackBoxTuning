@@ -56,7 +56,7 @@ parser.add_argument("--sigma2", default=0.2, type=float)
 parser.add_argument("--print_every", default=50, type=int)
 parser.add_argument("--eval_every", default=100, type=int)
 parser.add_argument("--device", default='cuda:0', type=str)
-parser.add_argument("--alg", default='CMA', type=str)
+parser.add_argument("--alg", default='CMA', type=str, choices=['CMA','openes'])#['CMA','openes','PEPG','DFO_tr']
 parser.add_argument("--random_proj", default='normal', type=str)
 parser.add_argument("--seed", default=42, type=int)
 parser.add_argument("--loss_type", default='ce', type=str)
@@ -85,7 +85,7 @@ parser.add_argument("--learning_rate", default=0.2, type=float, help='openes hyp
 # for two stage DFO, before budget use CMA, and after budget2 use replace_alg
 # if use two stage DFO, budget2 be as large as possible, you can choose 6000 or larger for nonCMA seems slow
 parser.add_argument("--budget2", default=0, type=int, help='two stage hyperparameter,0 refers not to use')
-parser.add_argument("--replace_alg", default='Powell', type=str, choices=['CMA','openes','PEPG','DFO_tr','Nelder-Mead','Powell','SLSQP','COBYLA','L-BFGS-B'], help='select alg from CMA, openes, PEPG, DFO_tr, Nelder-Mead, Powell, SLSQP, COBYLA, BFGS etc')
+parser.add_argument("--replace_alg", default='COBYLA', type=str, choices=['Powell','Nelder-Mead','COBYLA','SLSQP','L-BFGS-B'])
 # for replace best result0 with best result5 to eval dev, mean solution, presumably better with noise
 parser.add_argument("--pop_mean", default=0, type=int, choices=[0,1], help='0:use result.xbest, 1:use result[5], CMA replace result[0] with mean solution to eval dev, presumably better with noise')
 args = parser.parse_args()
@@ -155,6 +155,8 @@ pop_mean = args.pop_mean
 print("pop_mean:", pop_mean)
 print("budget:", budget)
 print("budget2:", budget2)
+print("print_every:", print_every)
+print("eval_every:", eval_every)
 print("###################################")
 # # fixed hyper-params
 # if cat_or_add == 'add':
@@ -677,8 +679,8 @@ model_forward_api = LMForwardAPI(
 
 
 if alg.lower()=='cma':
-    cma_or_escma='cma'# CMA by import cma or es 
-    if cma_or_escma=='cma':
+    cma_or_formalcma='cma'# CMA by import cma or es 
+    if cma_or_formalcma=='cma':
         cma_opts = {
             'seed': seed,
             'popsize': popsize,# every popsize times api call ask&tell once
@@ -730,25 +732,142 @@ if alg.lower()=='cma':
                         fitness_list_result5[pop_] = model_forward_api.eval(result[i][5], i)#just for watch result[5] fitness
                     # model_forward_api.best_prefix[i] = model_forward_api.linear[i](torch.tensor(result[i][5]).type(torch.float32)).reshape(-1,model_forward_api.config.hidden_size)  # set best cv
                 
-                if round_ == 0:
+                if round_==0:
+                    print("###i,is_better_dev:",i,model_forward_api.is_better_dev[i])
                     best_result[i] = result[i][5] if pop_mean else result[i][0]
-                    model_forward_api.best_prefix[i] = model_forward_api.linear[i](torch.tensor(best_result[i]).type(torch.float32)).reshape(-1,model_forward_api.config.hidden_size)  # set best cv
                     model_forward_api.refresh_is_better_dev(i)
                 else:
                     if model_forward_api.is_better_dev[i]:
-                        print("###is_better_dev")
+                        print("###i,is_better_dev:",i,model_forward_api.is_better_dev[i])
                         best_result[i] = result[i][5] if pop_mean else result[i][0]
-                        model_forward_api.best_prefix[i] = model_forward_api.linear[i](torch.tensor(best_result[i]).type(torch.float32)).reshape(-1,model_forward_api.config.hidden_size)  # set best cv
                         model_forward_api.refresh_is_better_dev(i)
+                    
+                if pop_mean:
+                    model_forward_api.best_prefix[i] = model_forward_api.linear[i](torch.tensor(result[i][5]).type(torch.float32)).reshape(-1,model_forward_api.config.hidden_size)  # set best cv
+                else:
+                    print("###model_forward_api.best_prefix[i]###")
+                    model_forward_api.best_prefix[i] = model_forward_api.linear[i](torch.tensor(result[i][0]).type(torch.float32)).reshape(-1,model_forward_api.config.hidden_size)  # set best cv
                 if i==len(es_list)-1:
                     es.logger.add()  # write data to disc to be plotted
                     es.disp()
         es_list[-1].logger.plot()
         savefig("./cmaplot.png")
+    elif cma_or_formalcma=='formalcma':
+        cma_opts = {
+            'seed': seed,
+            'popsize': popsize,# every popsize times api call ask&tell once
+            #分化出popsize=20个种群(x)依次训 所以solutions大小intrinsic_dim*popsize=500*20
+            'maxiter': budget // (popsize * model_forward_api.config.num_hidden_layers),
+            'verbose': -1,
+        }
+        if bound > 0:
+            cma_opts['bounds'] = [-1 * bound, 1 * bound]
+        sigmas = [sigma1]
+        for i in range(model_forward_api.config.num_hidden_layers - 1):
+            sigmas.append(sigma2)
+        assert len(sigmas) == model_forward_api.config.num_hidden_layers
+        es_list = [
+            cma.CMAEvolutionStrategy(intrinsic_dim * [0], sigmas[i], inopts=cma_opts)
+            for i in range(model_forward_api.config.num_hidden_layers)
+        ]
+        print('Population Size: {}'.format(es_list[0].popsize))
+        start_time = time.time()
 
-        if budget2:
-            print("finish CMA. start 2nd stage DFO")
+        for _ in range(budget // (int(popsize) * model_forward_api.config.num_hidden_layers)):
+            for i, es in enumerate(es_list):
+                solutions = es.ask()
+                fitnesses = [model_forward_api.eval(x, i) for x in solutions]
+                es.tell(solutions, fitnesses)
+                model_forward_api.best_prefix[i] = model_forward_api.linear[i](
+                    torch.tensor(es.result.xbest).type(torch.float32)).reshape(-1,
+                                                                            model_forward_api.config.hidden_size)  # set best cv
+            if _  % 2 == 0:
+                epoch_num = _ * (int(popsize) * model_forward_api.config.num_hidden_layers)
+                if not os.path.exists(f'./results/{epoch_num}_results/{task_name}/{seed}'):
+                    os.makedirs(f'./results/{epoch_num}_results/{task_name}/{seed}')
+                torch.save(model_forward_api.best_prefix, f=f'./results/{epoch_num}_results/{task_name}/{seed}/best.pt')
+
+
+        end_time = time.time()
+        print('Done. Elapsed time: {} (mins)'.format((end_time - start_time) / 60))
+        if not os.path.exists(f'./results/last_epoch_results/{task_name}/{seed}'):
+            os.makedirs(f'./results/last_epoch_results/{task_name}/{seed}')
+
+        if not os.path.exists(f'./results/dev_best_results/{task_name}/{seed}'):
+            os.makedirs(f'./results/dev_best_results/{task_name}/{seed}')
+
+        torch.save(model_forward_api.best, f=f'./results/dev_best_results/{task_name}/{seed}/best.pt')
+        torch.save(model_forward_api.best_prefix, f=f'./results/last_epoch_results/{task_name}/{seed}/best.pt')
+elif alg.lower() in ['openes']:
+    import es
+    #solver = es.SimpleGA(...)
+    #solver = es.PEPG(...)
+    #solver = es.OpenES(...)
+    #solver = es.CMAES(...)
+    # solver =es.CMAES(intrinsic_dim,      # number of model parameters
+    #            sigma_init=1,       # initial standard deviation
+    #            popsize=popsize           # population size
+    #         #    weight_decay=0.01    # weight decay coefficient)
+    #         )
+
+    sigmas = [sigma1]
+    for i in range(model_forward_api.config.num_hidden_layers - 1):
+        sigmas.append(sigma2)
+    assert len(sigmas) == model_forward_api.config.num_hidden_layers
+    es_list = [
+        es.OpenES(intrinsic_dim,                  # number of model parameters
+        seed=seed,
+        sigma_init=sigmas[i],            # initial standard deviation
+        sigma_decay=1,         # don't anneal standard deviation
+        learning_rate=learning_rate,         # learning rate for standard deviation
+        learning_rate_decay = 1, # annealing the learning rate
+        popsize=popsize,       # population size
+        antithetic=False,          # whether to use antithetic sampling
+        weight_decay=0,         # weight decay coefficient
+        rank_fitness=False,        # use rank rather than fitness numbers
+        forget_best=False)         # forget historical best, for output
+        for i in range(model_forward_api.config.num_hidden_layers)
+    ]
+
+    start_time = time.time()
+
+    result = model_forward_api.config.num_hidden_layers * [0]
+    best_result = model_forward_api.config.num_hidden_layers * [0]
+    for round_ in range(budget // (int(popsize) * model_forward_api.config.num_hidden_layers)):
+        for i, es in enumerate(es_list):# i refers to layer_num, 0->24 0>24 ...
+            print("layer i:",i)
+            # update_CMA_per = eval_every - popsize if pop_mean else eval_every
+            update_CMA_per = eval_every
+            solutions = es.ask()
+            #ask delivers new candidate solutions and tell updates the optim instance by passing the respective function values
+            fitnesses = [-model_forward_api.eval(x, i) for x in solutions]
+            #every time we call eval (per 20 popsize), print loss
+            #serial模式，20个种群都输入fitnesses
+            es.tell(fitnesses)
+            result[i] = es.result()#[0]:solution [1]:best f value [2]
+            print("i,result[i][1]:",i,result[i][1])
+            print("fitness_list[0]:",fitnesses[0])
+            # model_forward_api.best_prefix[i] = model_forward_api.linear[i](torch.tensor(result[i].xbest).type(torch.float32)).reshape(-1,model_forward_api.config.hidden_size)  # set best cv
+            #ndarray(500,1) to torch.Size([51200]) to torch.Size([50, 1024])
+
+            if round_==0:
+                print("###i,is_better_dev:",i,model_forward_api.is_better_dev[i])
+                best_result[i] = result[i][5] if pop_mean else result[i][0]
+                model_forward_api.refresh_is_better_dev(i)
+            else:
+                if model_forward_api.is_better_dev[i]:
+                    print("###i,is_better_dev:",i,model_forward_api.is_better_dev[i])
+                    best_result[i] = result[i][5] if pop_mean else result[i][0]
+                    model_forward_api.refresh_is_better_dev(i)
+            model_forward_api.best_prefix[i] = model_forward_api.linear[i](torch.tensor(result[i][0]).type(torch.float32)).reshape(-1,model_forward_api.config.hidden_size)  # set best cv
+if budget2:
+    cycle_layer = "large"
+    if cycle_layer == "small":
+        print("finish CMA. start 2nd stage DFO")
+        # use 2 stage because intrinsic_dim=500 is to large for classical none evolution algorithm too converge and it needs to many api to call (per iter)
+        for round_ in range(budget2 // ( 20 * model_forward_api.config.num_hidden_layers)):
             for i in range(model_forward_api.config.num_hidden_layers):# i refers to layer_num #0->..->0,...,24-->..->24
+                # dev advance quickly when layers num is 0,1
                 print("layer i:",i)
                 max_iter=budget2 // model_forward_api.config.num_hidden_layers
                 def short_api(x_):#[500,1] to [20]
@@ -757,21 +876,65 @@ if alg.lower()=='cma':
 
                 options={}
                 for methods in ['Powell','Nelder-Mead']:#, "maxfev": 100 powell do not need seed
-                    options[methods]={"disp": True, "maxfev":max_iter}
+                    options[methods]={"disp": True, "maxiter":1}
+                    #use maxfev not callback, maxiter callback (only powell has fev)
+                    #maxfev just call eval maxfev times, maxiter not match budget2 cause Powell needs call eval many times one fev
+                    #if there is not enough one iter, Powell will not update x
+                    #you can not know how much fev or call one iter so you cant update one layer by one layer per call
+                    #near 12*intrinsic_dim fev per iter, than callback
+                    
+                    #the most naive non gradient algotithm Nelder-Mead cracks in this problem
+
+                    #but you can use maxiter=1 in COBYLA
                 for methods in ['BFGS','SLSQP','L-BFGS-B']:#, "maxiter": 80/200
                     options[methods]={"disp": True, "maxiter":max_iter}
                 for methods in ['COBYLA']:
-                    options[methods]={"disp": True,"maxiter":max_iter}
-                options['Powell'].update({"ftol": 1e-26}) 
-                options['Nelder-Mead'].update({"ftol": 1e-26})
-                options['COBYLA'].update({"tol": 1e-25})
-                options['BFGS'].update({"gtol": 1e-5})
-                options['SLSQP'].update({"ftol": 1e-26})
+                    options[methods]={"disp": False,"maxiter":20}
+                # options['Powell'].update({"ftol": 1e-26}) 
+                # options['Nelder-Mead'].update({"ftol": 1e-26})
+                # options['COBYLA'].update({"tol": 1e-25})
+                # options['BFGS'].update({"gtol": 1e-5})
+                # options['SLSQP'].update({"ftol": 1e-26})
 
                 start_time = time.time()
-                res = minimize(short_api,  best_result[i],  method=replace_alg, options=options[replace_alg])
-                model_forward_api.best_prefix[i] = model_forward_api.linear[i](torch.tensor(res.x).type(torch.float32)).reshape(-1,model_forward_api.config.hidden_size)  # set best cv
+                def callback_f(x_):
+                    print("i,fitness:",i,short_api(x_))
+                    model_forward_api.best_prefix[i] = model_forward_api.linear[i](torch.tensor(x_).type(torch.float32)).reshape(-1,model_forward_api.config.hidden_size)  # set best cv
+                res = minimize(short_api,  best_result[i],  method=replace_alg, callback=callback_f, options=options[replace_alg])
+                best_result[i]= res.x
                 print("layer,loss(fitnesses):",i,res.fun)
+    elif cycle_layer == "large":
+        print("finish CMA. start 2nd stage DFO")
+
+        for i in range(model_forward_api.config.num_hidden_layers):# i refers to layer_num #0->..->0,...,24-->..->24
+            print("layer i:",i)
+            max_iter=budget2 // model_forward_api.config.num_hidden_layers
+            def short_api(x_):#[500,1] to [20]
+                fitness = model_forward_api.eval(x_,i)
+                return fitness
+
+            options={}
+            for methods in ['Powell','Nelder-Mead']:#, "maxfev": 100 powell do not need seed
+                options[methods]={"disp": True, "maxfev":max_iter}
+            for methods in ['BFGS','SLSQP','L-BFGS-B']:#, "maxiter": 80/200
+                options[methods]={"disp": True, "maxiter":max_iter}
+            for methods in ['COBYLA']:
+                options[methods]={"disp": False,"maxiter":max_iter}
+            # options['Powell'].update({"ftol": 1e-26}) 
+            # options['Nelder-Mead'].update({"ftol": 1e-26})
+            # options['COBYLA'].update({"tol": 1e-25})
+            # options['BFGS'].update({"gtol": 1e-5})
+            # options['SLSQP'].update({"ftol": 1e-26})
+
+            start_time = time.time()
+            def callback_f(x_):
+                print('i,fitness(x_):',i,short_api(x_))
+                model_forward_api.best_prefix[i] = model_forward_api.linear[i](torch.tensor(x_).type(torch.float32)).reshape(-1,model_forward_api.config.hidden_size)  # set best cv
+            
+            res = minimize(short_api,  best_result[i],  method=replace_alg,callback=callback_f, options=options[replace_alg])
+
+            print("layer,loss(fitnesses):",i,res.fun)
+
 
     # elif cma_or_escma=='escma':
     #     import es
@@ -873,4 +1036,4 @@ print('Done. Elapsed time: {} (mins)'.format((end_time - start_time) / 60))
 if not os.path.exists(f'./results/{task_name}/{seed}'):
     os.makedirs(f'./results/{task_name}/{seed}')
 
-torch.save(model_forward_api.best_prefix, f=f'./results/{task_name}/{seed}/best.pt')
+torch.save(model_forward_api.best, f=f'./results/{task_name}/{seed}/best.pt')
