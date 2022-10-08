@@ -22,6 +22,7 @@ parser.add_argument("--cuda", default=0, type=int)
 parser.add_argument("--seed", default=8, type=int)
 parser.add_argument("--print_every", default=50, type=int)
 parser.add_argument("--eval_every", default=100, type=int)
+parser.add_argument("--calibration", default=0, type=int, choices=[0,1], help='calibration logits')
 # parser.add_argument("--suffix", default='', type=str)
 args = parser.parse_args()
 
@@ -29,6 +30,7 @@ task_name = args.task_name
 seed = args.seed
 print_every = args.print_every
 eval_every = args.eval_every
+calibration = args.calibration
 model_name = 'roberta-large'
 tokenizer = RobertaTokenizer.from_pretrained(model_name)
 
@@ -116,7 +118,20 @@ for task_name in [task_name]:  # 'SNLI', 'SST-2', 'MRPC', 'AGNews', 'TREC',
 
             verbalizers = verbalizer_dict[task_name]
             intrested_logits = [res[:, tokenizer.encode(verbalizer, add_special_tokens=False)[0]] for verbalizer in verbalizers]
-            pred = torch.stack(intrested_logits).argmax(dim=0)
+            intrested_logits = torch.stack(intrested_logits) #[label_num,data_num]
+            pred_before = intrested_logits.argmax(dim=0)
+            
+            if calibration:
+                print("pred_no_calibration:", pred_before)
+                intrested_logits = intrested_logits / intrested_logits.sum(dim=0, keepdim=True)
+                import pickle
+                with open('p_cf.pickle', 'rb') as file:
+                    p_cf = pickle.load(file)
+                W = torch.linalg.inv(torch.eye(intrested_logits.shape[0], device=device) * p_cf[0].cuda())
+                b = torch.zeros([intrested_logits.shape[0], intrested_logits.shape[1]], device=device)
+                intrested_logits = torch.matmul(W,intrested_logits) + b
+            pred = intrested_logits.argmax(dim=0)
+            print("pred:", pred)
             # intrested_logits = torch.softmax(torch.stack(intrested_logits).T, dim=1)
             # intrested_logits = torch.mul(intrested_logits, CM)
             # if args.use_CM:

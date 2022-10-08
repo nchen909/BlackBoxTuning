@@ -419,9 +419,9 @@ class SNLIMetric(MetricBase):
             elif verb_ == 'Yes':
                 return 'Regardless'#'Alright'
         self.label_map = {
-            tokenizer.encode(change_SNLI_verb('Yes',1), add_special_tokens=False)[0]: 0,
-            tokenizer.encode(change_SNLI_verb('Maybe',1), add_special_tokens=False)[0]: 1,
-            tokenizer.encode(change_SNLI_verb('No',1), add_special_tokens=False)[0]: 2,
+            tokenizer.encode(change_SNLI_verb('Yes',0), add_special_tokens=False)[0]: 0,
+            tokenizer.encode(change_SNLI_verb('Maybe',0), add_special_tokens=False)[0]: 1,
+            tokenizer.encode(change_SNLI_verb('No',0), add_special_tokens=False)[0]: 2,
         }
 
     def evaluate(self, pred, target, seq_len=None):

@@ -15,7 +15,8 @@ def load_hf_dataset(data_dir: str = 'datasets', task_name: str = 'SST-2', seed: 
     """
     dataset = datasets.load_dataset(
         path=f'./{data_dir}/{task_name}/{task_name}.py',
-        split=f'{split}_{seed}'
+        split=f'{split}_{seed}',
+        cache_dir=f'fresh4calibration' ### add
     )
     return dataset
 
@@ -385,9 +386,9 @@ class SNLILoader(Loader):
             elif verb_ == 'Yes':
                 return 'Regardless'#'Alright'
         self.label2text = {
-            0: change_SNLI_verb("Yes",1),
-            1: change_SNLI_verb("Maybe",1),
-            2: change_SNLI_verb("No",1),
+            0: change_SNLI_verb("Yes",0),
+            1: change_SNLI_verb("Maybe",0),
+            2: change_SNLI_verb("No",0),
         }
         self.data_dir = data_dir
 
@@ -450,6 +451,7 @@ class TRECLoader(Loader):
             5: "Location"
         }
         self.data_dir = data_dir
+        self.is_content_free = 0
 
     def convert_examples(self, example):
         if self.n_prompt_tokens > 0:  # use randomly selected words as initial prompt
@@ -475,6 +477,12 @@ class TRECLoader(Loader):
         dataset = dataset.filter(lambda example: example['labels'] in [0, 1, 2, 3, 4, 5])
         dataset = dataset.map(self.convert_examples, load_from_cache_file=False)
         print(dataset[0])
+        print("####dataset[-1]####")
+        print(dataset[-1])
+        if 'N/A' in dataset[-1]['text']:
+            self.is_content_free = 1
+            print("TRECLoader.is_content_free set to 1")
+        print("###################")
         dataset = dataset.map(partial(convert_to_features, tokenizer=self.tokenizer), batched=True, load_from_cache_file=False)
         # Convert to fastNLP.DataSet
         ds = DataSet()
@@ -495,3 +503,4 @@ class TRECLoader(Loader):
         datasets = {name: self._load(name, seed) for name in splits}
         data_bundle = DataBundle(datasets=datasets)
         return data_bundle
+    

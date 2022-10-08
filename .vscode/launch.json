@@ -13,17 +13,13 @@
             "justMyCode": true,
             "args":[
                 "--seed","8",
-                "--task_name","SNLI",
-                "--alg","CMA",
-<<<<<<< HEAD
-                "--sigma","1",
-=======
-                "--sigma1","1",
-                "--budget","500",
-                "--budget2","4000",
-                "--pop_mean","0",
-
->>>>>>> 6342000... 221005 COBYLA final
+                "--task_name","TREC",
+                // "--alg","CMA",
+                // "--sigma1","1",
+                // "--budget","0",
+                // "--budget2","0",
+                // "--pop_mean","0",
+                "--calibration","1",
             ]
         }
     ]

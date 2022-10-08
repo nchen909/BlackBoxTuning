@@ -4,6 +4,7 @@ import time
 import math
 import pickle
 import random
+from unittest import loader
 from scipy.optimize import minimize
 import torch
 import argparse
@@ -88,6 +89,8 @@ parser.add_argument("--budget2", default=0, type=int, help='two stage hyperparam
 parser.add_argument("--replace_alg", default='COBYLA', type=str, choices=['Powell','Nelder-Mead','COBYLA','SLSQP','L-BFGS-B'])
 # for replace best result0 with best result5 to eval dev, mean solution, presumably better with noise
 parser.add_argument("--pop_mean", default=0, type=int, choices=[0,1], help='0:use result.xbest, 1:use result[5], CMA replace result[0] with mean solution to eval dev, presumably better with noise')
+parser.add_argument("--calibration", default=0, type=int, choices=[0,1], help='calibration logits for only AGNews,TREC,SST-2')
+
 args = parser.parse_args()
 
 # below are free hyper-params
@@ -132,6 +135,7 @@ data_dir = args.data_dir
 
 budget2 = args.budget2
 replace_alg = args.replace_alg
+calibration =args.calibration
 
 print("###################################")
 #for CMA
@@ -309,8 +313,61 @@ class LMForwardAPI:
             raise NotImplementedError
         self.margin = self.metric.margin
         self.ce_loss = torch.nn.CrossEntropyLoss(reduction='mean')
+    # def get_p_content_free(params, train_sentences, train_labels, content_free_inputs=('N/A',)):
+    #     """Query model with content free input, return its prediction probability for each label"""
+    #     label_dict = params['label_dict']
 
-    def calc_metric(self, logits, target):
+    #     all_p_y = []
+    #     for content_free_input in content_free_inputs:
+    #         prompt = construct_prompt(params, train_sentences, train_labels, content_free_input)
+
+    #         p_y = [0] * len(label_dict)
+    #         for i, answers in label_dict.items():
+    #             prob = 0
+    #             for a in answers:
+    #                 prob += np.exp(complete(prompt + " " + a, 0, params['model'], echo=True, num_log_probs=1)['choices'][0]['logprobs']['token_logprobs'][-1])
+    #             p_y[i] = prob
+    #         all_p_y.append(p_y)
+
+    #     p_y = np.mean(np.array(all_p_y), axis=0)
+    #     p_y = p_y / np.sum(p_y) # normalize
+    #     return p_y
+    def eval_accuracy(self,all_label_probs, test_labels, mode=None, p_cf=None):
+        # evaluate the accuracy with and without contextual calibration
+        num_classes = all_label_probs.shape[1]
+        if p_cf is None:
+            # do not calibrate
+            W = np.identity(num_classes)
+            b = np.zeros([num_classes, 1])
+        else:
+            # calibrate
+            if mode == "diagonal_W":
+                W = np.linalg.inv(np.identity(num_classes) * p_cf)
+                b = np.zeros([num_classes, 1])
+            elif mode == "identity_W":
+                W = np.identity(num_classes)
+                b = -1 * np.expand_dims(p_cf, axis=-1)
+            else:
+                assert False
+
+        correctness_list = []
+        assert len(all_label_probs) == len(test_labels)
+        for label_probs, true_label in zip(all_label_probs, test_labels):
+            label_probs = label_probs / np.sum(label_probs) # normalize to 1
+
+            calibrate_label_probs = np.matmul(W, np.expand_dims(label_probs, axis=-1)) + b
+
+            ans_label = np.argmax(calibrate_label_probs)
+            if ans_label == true_label:
+                correctness_list.append(1)
+            else:
+                correctness_list.append(0)
+        return np.mean(correctness_list)
+
+    # # return a tensor each row normalize to 1
+    # def normalize(self, x):
+    #     return x / x.sum(dim=1, keepdim=True)
+    def calc_metric_calibration(self, logits, target, mode="diagonal_W", p_cf=None):
         label_map = self.metric.label_map
 
         converted_target = target.clone()
@@ -318,7 +375,58 @@ class LMForwardAPI:
             converted_target[target == key] = val
         interest_index = list(label_map.keys())
         logits = logits[:, interest_index]
-        pred = logits.argmax(dim=-1)
+        pred_old = logits.argmax(dim=-1)
+        print("###before calibration pred:", pred_old)
+        num_classes = len(label_map)
+        # calibrate
+        if mode == "diagonal_W":
+            W = torch.linalg.inv(torch.eye(num_classes, device=device) * p_cf)
+            b = torch.zeros([num_classes, 1], device=device)
+        elif mode == "identity_W":
+            W = torch.eye(num_classes, device=device)
+            b = -1 * torch.unsqueeze(p_cf, axis=-1, device=device)# [num_classes]2[num_classes,1]
+        else:
+            assert False
+        
+        
+        assert len(logits) == len(converted_target)
+        norm_logits = logits / logits.sum(dim=1, keepdim=True) # normalize to 1 , [datasets_len,num_classes]
+
+        calibrate_logits = torch.matmul(norm_logits,W) + b.repeat([1,len(norm_logits)]).t()
+        #([num_classes,num_classes]*[num_classes,datasets_len]+[num_classes,datasets_len]).T
+        pred = torch.argmax(calibrate_logits,axis=1)
+        print("###after calibration pred:", pred)
+        if self.metric_key == 'acc':
+            perf_old = (pred_old == converted_target).sum() / len(target)
+            print("###before calibration perf:", perf_old)
+            perf = (pred == converted_target).sum() / len(target)
+            print("###after calibration perf:", perf)
+        elif self.metric_key == 'f1':
+            perf = f1_score(converted_target.detach().cpu().numpy().tolist(),
+                            pred.detach().cpu().numpy().tolist())
+        else:
+            raise KeyError(f'[Metric] Only support [acc, f1], got {self.metric_key} instead.')
+
+        if self.loss_type == 'hinge':
+            loss = hinge_loss(logits, converted_target, margin=self.margin, reduction='sum').item() / len(target)
+        elif self.loss_type == 'ce':
+            loss = self.ce_loss(logits, converted_target).item()
+        elif self.loss_type == 'perf':
+            loss = -1 * perf
+        else:
+            raise KeyError(f'[Loss] Only support [hinge, ce, perf], got {self.loss_type} instead.')
+
+        return loss, perf
+
+    def calc_metric(self, logits, target):
+        label_map = self.metric.label_map #SNLI: {tokenize:label}:{38861: 0, 40926: 1, 33757: 2}
+
+        converted_target = target.clone()#[datasize]
+        for key, val in label_map.items():
+            converted_target[target == key] = val #tensor,size=data,[true_label,...]
+        interest_index = list(label_map.keys()) #[verbalizer index]
+        logits = logits[:, interest_index]
+        pred = logits.argmax(dim=-1) #tensor,[datasize,label_num] ->argmax-> [datasize]
 
         if self.metric_key == 'acc':
             perf = (pred == converted_target).sum() / len(target)
@@ -339,7 +447,44 @@ class LMForwardAPI:
 
         return loss, perf
 
-    def eval(self, prompt_embedding=None, layer_id=None, test_data=None):
+    def get_p_cf(self, prompt_embedding=None, layer_id=None, test_data=None):
+        best_prefix = self.best_prefix.clone()
+        if prompt_embedding is not None:
+            prompt_embedding = torch.tensor(prompt_embedding).type(torch.float32)  # z
+            prompt_embedding = self.linear[layer_id](prompt_embedding).reshape(-1, self.config.hidden_size)  # Az
+            best_prefix[layer_id] = prompt_embedding
+
+        self.model.set_prompt_embedding(best_prefix)
+
+        for k, v in content_free_data.items():
+            content_free_data[k] = v.to(device)
+        with torch.no_grad():
+            if model_name in ['t5-small', 't5-base', 't5-large', 't5-3b']:
+                outputs = self.model(
+                    input_ids=content_free_data['input_ids'],
+                    attention_mask=content_free_data['attention_mask'],
+                    decoder_input_ids=content_free_data['decoder_input_ids'],
+                    decoder_attention_mask=content_free_data['decoder_attention_mask'],
+                )
+            elif model_name in ['gpt2', 'gpt2-medium', 'gpt2-large', 'gpt2-xl']:
+                outputs = self.model(
+                    input_ids=content_free_data['input_ids'],
+                    attention_mask=content_free_data['attention_mask'],
+                )
+            else:
+                outputs = self.model(
+                    input_ids=content_free_data['input_ids'],
+                    attention_mask=content_free_data['attention_mask'],
+                    mask_pos=content_free_data['mask_pos'],
+                )
+            logits = outputs['logits']
+            label_map = self.metric.label_map
+            interest_index = list(label_map.keys())
+            logits = logits[:,interest_index]
+            logits = logits / logits.sum(dim=1, keepdim=True) 
+            return logits[0]
+
+    def eval(self, prompt_embedding=None, layer_id=None, test_data=None, p_cf=None):
         self.num_call += 1
         best_prefix = self.best_prefix.clone()
         if prompt_embedding is not None:
@@ -420,12 +565,13 @@ class LMForwardAPI:
                 self.model.config.output_hidden_states = None
                 print('Random projections initialized.')
 
-            loss, perf = self.calc_metric(logits, train_data['labels'])
+            loss, perf = self.calc_metric(logits, train_data['labels']) if type(p_cf)!=type(torch.Tensor([0])) else \
+            self.calc_metric_calibration(logits, train_data['labels'], mode="diagonal_W", p_cf=p_cf)
 
             if perf > self.best_train_perf:
                 self.best_train_perf = perf
 
-            if self.num_call % self.print_every == 0:
+            if self.num_call % self.print_every == 0 or type(p_cf)==type(torch.Tensor([0])):
                 print(
                     '[# API Calls {}] loss: {}. Current perf: {}. Best perf so far: {}'.format(
                         self.num_call,
@@ -433,7 +579,7 @@ class LMForwardAPI:
                         round(float(perf), 4),
                         round(float(self.best_train_perf), 4)))
 
-            if self.num_call % self.eval_every == 0:
+            if self.num_call % self.eval_every == 0 or type(p_cf)==type(torch.Tensor([0])):
                 print('********* Evaluated on dev set *********')
                 for k, v in dev_data.items():
                     dev_data[k] = v.to(device)
@@ -457,7 +603,8 @@ class LMForwardAPI:
                             mask_pos=dev_data['mask_pos'],
                         )['logits']
 
-                dev_loss, dev_perf = self.calc_metric(logits, dev_data['labels'])
+                dev_loss, dev_perf = self.calc_metric(logits, dev_data['labels']) if type(p_cf)!=type(torch.Tensor([0])) else \
+                self.calc_metric_calibration(logits, dev_data['labels'], mode="diagonal_W", p_cf=p_cf)
                 # better_dev_policy = dev_perf >= self.best_dev_perf if pop_mean else dev_perf > self.best_dev_perf
                 better_dev_policy = dev_perf > self.best_dev_perf
                 if better_dev_policy:
@@ -575,7 +722,7 @@ elif model_name in ['gpt2', 'gpt2-medium', 'gpt2-large', 'gpt2-xl']:
 else:
     raise NotImplementedError
 
-cache_fn = f"caches/data_{model_name.replace('/', '-')}_{data_dir}_{task_name}_{n_prompt_tokens}_{seed}.pt"
+# cache_fn = f"caches/data_{model_name.replace('/', '-')}_{data_dir}_{task_name}_{n_prompt_tokens}_{seed}.pt"
 
 DataLoader = {
     'SST-2': SST2Loader,
@@ -587,18 +734,21 @@ DataLoader = {
 }
 
 
-@cache_results(cache_fn, _refresh=True)
+# @cache_results(cache_fn, _refresh=True)
 def get_data(task_name, tokenizer):
     splits = ['train', 'dev']
-    data_bundle = DataLoader[task_name](tokenizer=tokenizer, n_prompt_tokens=n_prompt_tokens, data_dir=data_dir).my_load(splits, seed)
+    global data_loader
+    data_loader = DataLoader[task_name](tokenizer=tokenizer, n_prompt_tokens=n_prompt_tokens, data_dir=data_dir)
+    data_bundle = data_loader.my_load(splits, seed)
     return data_bundle
 
 data_bundle = get_data(task_name=task_name, tokenizer=tokenizer)
-train_data, dev_data = data_bundle.get_dataset('train'), data_bundle.get_dataset('dev')
 
+train_data, dev_data = data_bundle.get_dataset('train'), data_bundle.get_dataset('dev')
 for ds in [train_data, dev_data]:
     ds.set_pad_val('input_ids', tokenizer.pad_token_id if tokenizer.pad_token_id is not None else 0)
     ds.set_pad_val('attention_mask', 0)
+
 
 print('# of train data: {}'.format(len(train_data)))
 print('Example:')
@@ -606,7 +756,11 @@ print(train_data[0])
 print('\n# of dev data: {}'.format(len(dev_data)))
 print('Example:')
 print(dev_data[0])
-
+if calibration or data_loader.is_content_free:
+    content_free_data = train_data[-1]
+    print('content free data:')
+    print(content_free_data)
+    train_data= train_data[:-1]
 if model_name in ['t5-small', 't5-base', 't5-large', 't5-3b']:
     train_data = {
         'input_ids': torch.tensor(train_data['input_ids'].get(list(range(len(train_data))))),
@@ -622,6 +776,14 @@ if model_name in ['t5-small', 't5-base', 't5-large', 't5-3b']:
         'decoder_attention_mask': torch.tensor(dev_data['decoder_attention_mask'].get(list(range(len(dev_data))))),
         'labels': torch.tensor(dev_data['labels'].get(list(range(len(dev_data))))),
     }
+    if calibration:
+        content_free_data = {
+            'input_ids': torch.tensor(content_free_data['input_ids']),
+            'attention_mask': torch.tensor(content_free_data['attention_mask']),
+            'decoder_input_ids': torch.tensor(content_free_data['decoder_input_ids']),
+            'decoder_attention_mask': torch.tensor(content_free_data['decoder_attention_mask']),
+            'labels': torch.tensor(content_free_data['labels']),
+        }
 elif model_name in ['gpt2', 'gpt2-medium', 'gpt2-large', 'gpt2-xl']:
     train_data = {
         'input_ids': torch.tensor(train_data['input_ids'].get(list(range(len(train_data))))),
@@ -633,6 +795,12 @@ elif model_name in ['gpt2', 'gpt2-medium', 'gpt2-large', 'gpt2-xl']:
         'attention_mask': torch.tensor(dev_data['attention_mask'].get(list(range(len(dev_data))))),
         'labels': torch.tensor(dev_data['labels'].get(list(range(len(dev_data))))),
     }
+    if calibration:
+        content_free_data = {
+            'input_ids': torch.tensor(content_free_data['input_ids']),
+            'attention_mask': torch.tensor(content_free_data['attention_mask']),
+            'labels': torch.tensor(content_free_data['labels']),
+        }
 else:
     train_data = {
         'input_ids': torch.tensor(train_data['input_ids'].get(list(range(len(train_data))))),
@@ -646,6 +814,13 @@ else:
         'mask_pos': torch.tensor(dev_data['mask_pos'].get(list(range(len(dev_data))))),
         'labels': torch.tensor(dev_data['labels'].get(list(range(len(dev_data))))),
     }
+    if calibration:
+        content_free_data = {
+            'input_ids': torch.unsqueeze(torch.tensor(content_free_data['input_ids']), axis=0),
+            'attention_mask': torch.unsqueeze(torch.tensor(content_free_data['attention_mask']), axis=0),
+            'mask_pos': torch.unsqueeze(torch.tensor(content_free_data['mask_pos']), axis=0),
+            'labels': torch.unsqueeze(torch.tensor(content_free_data['labels']), axis=0),
+        }
 
 model_forward_api = LMForwardAPI(
     model_name=model_name,
@@ -745,7 +920,6 @@ if alg.lower()=='cma':
                 if pop_mean:
                     model_forward_api.best_prefix[i] = model_forward_api.linear[i](torch.tensor(result[i][5]).type(torch.float32)).reshape(-1,model_forward_api.config.hidden_size)  # set best cv
                 else:
-                    print("###model_forward_api.best_prefix[i]###")
                     model_forward_api.best_prefix[i] = model_forward_api.linear[i](torch.tensor(result[i][0]).type(torch.float32)).reshape(-1,model_forward_api.config.hidden_size)  # set best cv
                 if i==len(es_list)-1:
                     es.logger.add()  # write data to disc to be plotted
@@ -860,6 +1034,7 @@ elif alg.lower() in ['openes']:
                     best_result[i] = result[i][5] if pop_mean else result[i][0]
                     model_forward_api.refresh_is_better_dev(i)
             model_forward_api.best_prefix[i] = model_forward_api.linear[i](torch.tensor(result[i][0]).type(torch.float32)).reshape(-1,model_forward_api.config.hidden_size)  # set best cv
+
 if budget2:
     cycle_layer = "large"
     if cycle_layer == "small":
@@ -934,8 +1109,32 @@ if budget2:
             res = minimize(short_api,  best_result[i],  method=replace_alg,callback=callback_f, options=options[replace_alg])
 
             print("layer,loss(fitnesses):",i,res.fun)
-
-
+if budget!=0:
+    with open('best_result.pickle', 'wb') as file:
+        # A new file will be created
+        print("save best_result to best_result.pickle")
+        pickle.dump(best_result, file)
+    with open('best_prefix.pickle', 'wb') as file:
+        # A new file will be created
+        print("save best_prefix to best_prefix.pickle")
+        pickle.dump(model_forward_api.best_prefix, file)
+if calibration:
+    print("### start calibration ###")
+    with open('best_result.pickle', 'rb') as file:
+        best_result = pickle.load(file)
+    with open('best_prefix.pickle', 'rb') as file:
+        model_forward_api.best_prefix = pickle.load(file)
+    p_cf = model_forward_api.config.num_hidden_layers * [0]
+    for i in range(model_forward_api.config.num_hidden_layers):
+        print("layer i :",i)
+        p_cf[i] = model_forward_api.get_p_cf(best_result[i], i)
+        fitnesses =model_forward_api.eval(best_result[i], i, None, p_cf[i])
+    with open('p_cf.pickle', 'wb') as file:
+        # A new file will be created
+        print("save p_cf to p_cf.pickle")
+        pickle.dump(p_cf, file)
+    torch.save(model_forward_api.best, f=f'./results/{task_name}/{seed}/best.pt')
+    print("### end calibration ###")
     # elif cma_or_escma=='escma':
     #     import es
     #     solver =es.CMAES(intrinsic_dim,      # number of model parameters

@@ -1,5 +1,1 @@
-<<<<<<< HEAD
-% # columns="iteration, evaluation, min max(neg(.)) min(pos(.)) max correlation, correlation matrix principal axes lengths  (sorted square roots of eigenvalues of correlation matrix)", seed=8, Tue Sep 27 02:40:14 2022
-=======
-% # columns="iteration, evaluation, min max(neg(.)) min(pos(.)) max correlation, correlation matrix principal axes lengths  (sorted square roots of eigenvalues of correlation matrix)", seed=8, Wed Oct  5 09:48:19 2022
->>>>>>> 6342000... 221005 COBYLA final
+% # columns="iteration, evaluation, min max(neg(.)) min(pos(.)) max correlation, correlation matrix principal axes lengths  (sorted square roots of eigenvalues of correlation matrix)", seed=8, Sat Oct  8 15:32:19 2022
