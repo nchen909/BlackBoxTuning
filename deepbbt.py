@@ -89,7 +89,7 @@ parser.add_argument("--budget2", default=0, type=int, help='two stage hyperparam
 parser.add_argument("--replace_alg", default='COBYLA', type=str, choices=['Powell','Nelder-Mead','COBYLA','SLSQP','L-BFGS-B'])
 # for replace best result0 with best result5 to eval dev, mean solution, presumably better with noise
 parser.add_argument("--pop_mean", default=0, type=int, choices=[0,1], help='0:use result.xbest, 1:use result[5], CMA replace result[0] with mean solution to eval dev, presumably better with noise')
-parser.add_argument("--calibration", default=0, type=int, choices=[0,1], help='calibration logits for only AGNews,TREC,SST-2')
+parser.add_argument("--calibration", default=0, type=int, choices=[0,1], help='calibration logits for only AGNews,TREC,SST-2, before use please and N/A to trainset and clear cache!')
 
 args = parser.parse_args()
 
@@ -1125,10 +1125,10 @@ if calibration:
     with open('best_prefix.pickle', 'rb') as file:
         model_forward_api.best_prefix = pickle.load(file)
     p_cf = model_forward_api.config.num_hidden_layers * [0]
-    for i in range(model_forward_api.config.num_hidden_layers):
+    for i in [model_forward_api.config.num_hidden_layers-1]:
         print("layer i :",i)
-        p_cf[i] = model_forward_api.get_p_cf(best_result[i], i)
-        fitnesses =model_forward_api.eval(best_result[i], i, None, p_cf[i])
+        p_cf = model_forward_api.get_p_cf(best_result[i], i)
+        fitnesses =model_forward_api.eval(best_result[i], i, None, p_cf)
     with open('p_cf.pickle', 'wb') as file:
         # A new file will be created
         print("save p_cf to p_cf.pickle")

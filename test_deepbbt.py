@@ -127,7 +127,7 @@ for task_name in [task_name]:  # 'SNLI', 'SST-2', 'MRPC', 'AGNews', 'TREC',
                 import pickle
                 with open('p_cf.pickle', 'rb') as file:
                     p_cf = pickle.load(file)
-                W = torch.linalg.inv(torch.eye(intrested_logits.shape[0], device=device) * p_cf[0].cuda())
+                W = torch.linalg.inv(torch.eye(intrested_logits.shape[0], device=device) * p_cf.cuda())
                 b = torch.zeros([intrested_logits.shape[0], intrested_logits.shape[1]], device=device)
                 intrested_logits = torch.matmul(W,intrested_logits) + b
             pred = intrested_logits.argmax(dim=0)

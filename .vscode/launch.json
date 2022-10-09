@@ -14,11 +14,11 @@
             "args":[
                 "--seed","8",
                 "--task_name","TREC",
-                // "--alg","CMA",
-                // "--sigma1","1",
-                // "--budget","0",
-                // "--budget2","0",
-                // "--pop_mean","0",
+                "--alg","CMA",
+                "--sigma1","1",
+                "--budget","0",
+                "--budget2","0",
+                "--pop_mean","0",
                 "--calibration","1",
             ]
         }
