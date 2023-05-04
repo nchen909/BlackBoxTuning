@@ -9,3 +9,5 @@ result*
 *.dat
 .history
 logs/
+hidstates/
+results/
